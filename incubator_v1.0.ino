@@ -66,14 +66,14 @@ void(* resetFunc) (void) = 0;
 void loop(){
   disp();
    static unsigned long currentTime = millis();
-   if(myButton.isReleased())        // if button pressed,
+   if(myButton.isReleased())
      currentTime = millis();  // reset timer
    if(millis() - currentTime > 10000) {
     dispVal();
    }
    else{
-    rot();
-   }
+    rot();}
+    
 }
 void dispVal(){
   lcd.setCursor(0,1);
@@ -119,20 +119,27 @@ void rot() {
       resetFunc();
     }
     while(1){
+      static unsigned long currentTime = millis();
       int mx=sizmenu[counter];
       currentStateCLK = digitalRead(CLK);
       if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
         lcd.clear();
         if (digitalRead(DT) != currentStateCLK) {
           cn--;
+          currentTime = millis();
           if(cn<0){
             cn=mx-1;}
           }
         else{
           cn++;
+          currentTime = millis();
           if(cn==mx){
             cn=0;}
           }
+        lcd.setCursor(0,0);
+        lcd.print("PRESS TO SAVE");
+        lcd.setCursor(0,1);
+        lcd.print("VALUE ->");
         lcd.setCursor(10,1);
         lcd.print(cn);
 
@@ -144,6 +151,10 @@ void rot() {
           lcd.clear();
           goto A;
        }
+      if(millis() - currentTime > 10000){
+        goto A;
+      }
+
    }
 
   }
