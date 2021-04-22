@@ -68,7 +68,7 @@ void loop(){
    static unsigned long currentTime = millis();
    if(myButton.isReleased())        // if button pressed,
      currentTime = millis();  // reset timer
-   if(millis() - currentTime > 5000) {
+   if(millis() - currentTime > 10000) {
     dispVal();
    }
    else{
