@@ -100,17 +100,17 @@ void disp(){
     lcd.print(opval[0]);lcd.print("|");lcd.print(int(temp));lcd.print(" ");lcd.print(opval[1]);lcd.print("|");lcd.print(int(hum));lcd.print("  ");lcd.print(opval[2]);lcd.print("x");
     if(temp < opval[0])
     {
-      digitalWrite(RELAYT1,1); 
-      digitalWrite(RELAYT2,1);  
-      //digitalWrite(RELAYH1,1); 
-      //digitalWrite(RELAYE,1);
+      digitalWrite(RELAYT1,0);
+      digitalWrite(RELAYT2,0);  
+      digitalWrite(RELAYH1,0);
+      digitalWrite(RELAYE,0);
     }
     else if(temp > opval[0])
     {
-      digitalWrite(RELAYT1,0);
-      digitalWrite(RELAYT2,0);  
-      //digitalWrite(RELAYH1,0);
-      //digitalWrite(RELAYE,0);
+      digitalWrite(RELAYT1,1); 
+      digitalWrite(RELAYT2,1);  
+      digitalWrite(RELAYH1,1); 
+      digitalWrite(RELAYE,1);
     }
 }
 }
