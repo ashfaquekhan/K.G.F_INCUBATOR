@@ -2,10 +2,10 @@
 #define DT 3
 #define DHT11_PIN 7
 
-#define TEMP_RELAY  10 
-#define FAN_RELAY  9 
-#define EXHAUST  6
-#define RELAYE  5
+#define TEMP_RELAY  10 //IN 1
+#define FAN_RELAY  9 // IN 2
+#define EXHAUST  6 // IN 3
+#define RELAYE  5 //IN 4
 
 #include <EEPROM.h>
 #include <Wire.h>
@@ -119,7 +119,7 @@ void disp(){
     lcd.print("H>");lcd.print(opval[2]);lcd.print("|");lcd.print(int(hum));lcd.print("|");lcd.print(opval[3]);
     if(temp<=opval[0] && state==0)
     {
-      digitalWrite(EXHAUST,0);
+      digitalWrite(EXHAUST,1);
       digitalWrite(TEMP_RELAY,0);
       if(temp>=opval[1])
       {
