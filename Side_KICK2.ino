@@ -124,6 +124,7 @@ void disp(){
       if(temp>=opval[1])
       {
         state=1;
+        digitalWrite(EXHAUST,1);
         digitalWrite(TEMP_RELAY,1);
       }
     }
@@ -145,6 +146,10 @@ void disp(){
     if(temp>opval[1])
     {
       digitalWrite(EXHAUST,0);
+    }
+    else
+    {
+      digitalWrite(EXHAUST,1);
     }
 }
 }
