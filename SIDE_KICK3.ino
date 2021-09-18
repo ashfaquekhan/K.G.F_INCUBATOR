@@ -13,14 +13,14 @@
 #include <dht.h>
 LiquidCrystal_PCF8574 lcd(0x27);
 dht DHT;
-int period = 2000;
-int relayState = LOW;                   // for HUMIDITY
-int rotationrelay = LOW;         // for rotation
+float period = 2000;
+float relayState = LOW;                   // for HUMIDITY
+float rotationrelay = LOW;         // for rotation
 uint32_t nextTime;    // will store last time updated "HUMIDITY"
-uint32_t nextTimeROT;    // will store last time updated "ROTATION" 
+uint32_t nextTimeROT;    // will store last time updated "ROTATION"
 boolean HUMPULSE= false;
 unsigned long time_now = 0;
-int temp,hum;
+float temp,hum;
 class Button {
     private:
         bool _state;
@@ -46,15 +46,15 @@ class Button {
         }
 };
 Button myButton(4);
-int counter = 0;
-int cnt=0;
-int currentStateCLK;
-int lastStateCLK;
+float counter = 0;
+float cnt=0;
+float currentStateCLK;
+float lastStateCLK;
 unsigned long lastButtonPress = 0;
-int sizmenu[7] ={40,40,99,99,61,61,1};
+float sizmenu[7] ={40,40,99,99,61,61,1};
 char *mainmenu[] ={"TEMP START","TEMP STOP","HUMD START","HUMD STOP","Fan-On","Fan-OFF","RESET"};
-int siz;
-int opval[7];
+float siz;
+float opval[7];
 bool state=0;
 bool hstate=0;
 void setup() {
@@ -69,7 +69,7 @@ void setup() {
   pinMode(RELAYE, OUTPUT);
   lcd.begin(16, 2);
   lcd.setBacklight(255);
-  lcd.home(); 
+  lcd.home();
   lcd.print("khangoatfarm.in");
   delay(2000);
   lcd.clear();
@@ -83,7 +83,7 @@ void(* resetFunc) (void) = 0;
 void loop(){
    static unsigned long currentTime = millis();
    if(myButton.isReleased())
-     currentTime = millis();  
+     currentTime = millis();
    if(millis() - currentTime > 10000) {
     disp();
    }
@@ -110,13 +110,13 @@ void disp(){
   if(millis() >= time_now + period){
     lcd.clear();
     time_now += period;
-    int chk = DHT.read22(DHT11_PIN);
+    float chk = DHT.read22(DHT11_PIN);
     temp=DHT.temperature;
     hum=DHT.humidity;
     lcd.setCursor(0,0);
-    lcd.print("T>");lcd.print(opval[0]);lcd.print("|");lcd.print(int(temp));lcd.print("|");lcd.print(opval[1]);
+    lcd.print(opval[0],1);lcd.print("|");lcd.print(temp,1);lcd.print("|");lcd.print(opval[1],1);
     lcd.setCursor(0,1);
-    lcd.print("H>");lcd.print(opval[2]);lcd.print("|");lcd.print(int(hum));lcd.print("|");lcd.print(opval[3]);
+    lcd.print(opval[2],1);lcd.print("|");lcd.print(hum,1);lcd.print("|");lcd.print(opval[3],1);
     if(temp<=opval[0] )
     {
       state = 0;
@@ -133,7 +133,7 @@ void disp(){
     }
     if(temp>opval[1])
     {
-      digitalWrite(EXHAUST,1);
+      digitalWrite(EXHAUST,0);
     }
     if(hum<=opval[2] && state ==1)
     {
@@ -150,8 +150,8 @@ void settings() {
   lcd.setCursor(0,0);
   lcd.print("SETTINGS");
   lcd.setCursor(0,1);
-  lcd.print(mainmenu[counter]);lcd.print(" ");lcd.print(opval[counter]);
-  int lim=sizeof(mainmenu)/2;
+  lcd.print(mainmenu[int(counter)]);lcd.print(" ");lcd.print(opval[int(counter)]);
+  float lim=sizeof(mainmenu)/2;
   currentStateCLK = digitalRead(CLK);
   if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
     lcd.clear();
@@ -169,27 +169,27 @@ void settings() {
   }
   lastStateCLK = currentStateCLK;
   if (myButton.isReleased()) {
-    int cn=0;
-    if(mainmenu[counter]=="RESET"){
+    float cn=0;
+    if(mainmenu[int(counter)]=="RESET"){
       resetFunc();
     }
     else{
       while(1){
         unsigned long currentTime = millis();
-        int mx=sizmenu[counter];
+        float mx=sizmenu[int(counter)];
         currentStateCLK = digitalRead(CLK);
         if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
           lcd.clear();
           if (digitalRead(DT) != currentStateCLK) {
-            cn--;
+            cn-=0.1;
             currentTime = millis();
             if(cn<0){
               cn=mx-1;}
             }
           else{
-            cn++;
+            cn+=0.1;
             currentTime = millis();
-            if(cn==mx){
+            if(cn>mx){
               cn=0;}
             }
           lcd.setCursor(0,0);
@@ -198,11 +198,11 @@ void settings() {
           lcd.print("VALUE ->");
           lcd.setCursor(10,1);
           lcd.print(cn);
-    
+
          }
         lastStateCLK = currentStateCLK;
-        if (myButton.isReleased()) { 
-            opval[counter]=cn;
+        if (myButton.isReleased()) {
+            opval[int(counter)]=cn;
             writeIntArrayIntoEEPROM(20,opval,7);
             lcd.clear();
             currentTime = millis();
@@ -218,22 +218,22 @@ void settings() {
   }
   delay(1);
 }
-void writeIntArrayIntoEEPROM(int address, int numbers[], int arraySize)
+void writeIntArrayIntoEEPROM(float address, float numbers[], float arraySize)
 {
-  int addressIndex = address;
-  for (int i = 0; i < arraySize; i++) 
+  float addressIndex = address;
+  for (float i = 0; i < arraySize; i++)
   {
-    EEPROM.write(addressIndex, numbers[i] >> 8);
-    EEPROM.write(addressIndex + 1, numbers[i] & 0xFF);
+    EEPROM.write(addressIndex, int(numbers[int(i)]) >> 8);
+    EEPROM.write(addressIndex + 1, int(numbers[int(i)]) & 0xFF);
     addressIndex += 2;
-  }                                                                                                                                                                              
+  }
 }
-void readIntArrayFromEEPROM(int address, int numbers[], int arraySize)
+void readIntArrayFromEEPROM(float address, float numbers[], float arraySize)
 {
-  int addressIndex = address;
-  for (int i = 0; i < arraySize; i++)
+  float addressIndex = address;
+  for (float i = 0; i < arraySize; i++)
   {
-    numbers[i] = (EEPROM.read(addressIndex) << 8) + EEPROM.read(addressIndex + 1);
+    numbers[int(i)] = (EEPROM.read(addressIndex) << 8) + EEPROM.read(addressIndex + 1);
     addressIndex += 2;
   }
 }
