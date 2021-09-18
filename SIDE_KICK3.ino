@@ -51,12 +51,10 @@ float cnt=0;
 float currentStateCLK;
 float lastStateCLK;
 unsigned long lastButtonPress = 0;
-float sizmenu[7] ={40,40,99,99,61,61,1};
-char *mainmenu[] ={"TEMP START","TEMP STOP","HUMD START","HUMD STOP","Fan-On","Fan-OFF","RESET"};
+float sizmenu[7] ={40,40,99,99,40,95,1};
+char *mainmenu[] ={"TEMP START","TEMP STOP","HUMD START","HUMD STOP","Fan-T","Fan-H","RESET"};
 float siz;
 float opval[7];
-bool state=0;
-bool hstate=0;
 void setup() {
   readIntArrayFromEEPROM(20,opval,7);
   Wire.begin();
@@ -90,22 +88,7 @@ void loop(){
    else{
     settings();
    }
-   pulse();
 }
-void pulse(){
-  uint32_t currentTime = millis();
-  if (currentTime > nextTimeROT) {
-    if (rotationrelay == LOW) {
-      rotationrelay = HIGH;
-      nextTimeROT = currentTime + (opval[4]*60000);
-    } else {
-      rotationrelay = LOW;
-      nextTimeROT = currentTime + (opval[5]*60000); //ON INTERVAL
-    }
-  }
-  digitalWrite(RELAYE, rotationrelay);
-}
-
 void disp(){
   if(millis() >= time_now + period){
     lcd.clear();
@@ -114,35 +97,28 @@ void disp(){
     temp=DHT.temperature;
     hum=DHT.humidity;
     lcd.setCursor(0,0);
-    lcd.print(opval[0],1);lcd.print("|");lcd.print(temp,1);lcd.print("|");lcd.print(opval[1],1);
+    lcd.print("T>");lcd.print(opval[0],1);lcd.print("|");lcd.print(temp,1);lcd.print("|");lcd.print(opval[1],1);
     lcd.setCursor(0,1);
-    lcd.print(opval[2],1);lcd.print("|");lcd.print(hum,1);lcd.print("|");lcd.print(opval[3],1);
+    lcd.print("H>");lcd.print(opval[2],1);lcd.print("|");lcd.print(hum,1);lcd.print("|");lcd.print(opval[3],1);
     if(temp<=opval[0] )
     {
-      state = 0;
-      digitalWrite(EXHAUST,1);
       digitalWrite(TEMP_RELAY,0);
       digitalWrite(FAN_RELAY,0);
     }
     else if(temp>=opval[1])
     {
-      state=1;
-      digitalWrite(EXHAUST,0);
       digitalWrite(TEMP_RELAY,1);
       digitalWrite(FAN_RELAY,1);
     }
-    if(temp>opval[1])
+    if(temp>=opval[4] || hum>=opval[5])
     {
       digitalWrite(EXHAUST,0);
     }
-    if(hum<=opval[2] && state ==1)
+    if(hum<=opval[5] || temp<=opval[4])
     {
-      digitalWrite(FAN_RELAY,0);
+      digitalWrite(EXHAUST,1);
     }
-    if(hum>opval[3])
-    {
-      digitalWrite(TEMP_RELAY,0);
-    }
+   
 }
 }
 void settings() {
