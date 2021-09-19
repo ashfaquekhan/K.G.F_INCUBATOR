@@ -110,11 +110,13 @@ void disp(){
       digitalWrite(TEMP_RELAY,1);
       digitalWrite(FAN_RELAY,1);
     }
-    if(temp>=opval[4] || hum>=opval[5])
+    //if(temp>=opval[4] || hum>=opval[5])
+    if(temp>opval[4])
     {
       digitalWrite(EXHAUST,0);
     }
-    if(hum<=opval[5] || temp<=opval[4])
+    //if(hum<=opval[5] || temp<=opval[4])
+    if(temp<opval[4])
     {
       digitalWrite(EXHAUST,1);
     }
