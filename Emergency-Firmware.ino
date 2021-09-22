@@ -13,8 +13,8 @@
 #include <dht.h>
 LiquidCrystal_PCF8574 lcd(0x27);
 dht DHT;
-float period = 2000;
-unsigned long time_now = 0;
+unsigned long period = 2000, minut_res =60000*60;
+unsigned long time_now = 0,time_res=0;
 float temp,hum,tl=37.2,tu=38.2,ex=38.9;
 bool line;
 bool exhaust=0;
@@ -39,7 +39,6 @@ void setup() {
   lcd.print("**EMERGENCY MODE");
   delay(2000);
   lcd.clear();
-  Serial.begin(9600);
   delay(500);
   digitalWrite(TEMP_RELAY,1);
   digitalWrite(FAN_RELAY,1);
@@ -51,7 +50,7 @@ void loop(){
   disp();
 }
 void disp(){
-  if(millis() >= time_now + period){
+  if(millis() >=  time_now +period){
     lcd.clear();
     time_now += period;
     float chk = DHT.read22(DHT11_PIN);
@@ -87,10 +86,15 @@ void disp(){
       lcd.setCursor(0,0);
       lcd.print("CHECK THE SENSOR");
       lcd.setCursor(0,1);
-      lcd.print("RESTARTING IN 5 SECONDS");
-      delay(5000);
+      lcd.print("RESTARTING");
+      delay(2000);
       digitalWrite(RESET,0);
       delay(200);
     }
-}
+  }
+  if(millis() > time_res + minut_res)
+  {
+      digitalWrite(RESET,0);
+      delay(200);
+  }
 }
