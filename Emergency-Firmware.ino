@@ -42,6 +42,7 @@ void setup() {
   digitalWrite(EXHAUST,1);
   digitalWrite(RELAYE,1);
 }
+void(* resetFunc) (void) = 0;
 void loop(){
   disp();
 }
@@ -56,7 +57,7 @@ void disp(){
     lcd.print("T>");lcd.print(tl,1);lcd.print("|");lcd.print(temp,1);lcd.print("|");lcd.print(tu,1);
     lcd.setCursor(0,1);
     lcd.print("H>");lcd.print(hum,1);lcd.print(" Vent:");lcd.print(exhaust?"OFF":"ON");
-    if(temp<=tl)
+    if(temp<=tl && temp>0)
     {
       digitalWrite(TEMP_RELAY,0);
       digitalWrite(FAN_RELAY,0);
@@ -75,6 +76,10 @@ void disp(){
     {
       exhaust=1;
       digitalWrite(EXHAUST,1);
+    }
+    if(temp<0)
+    {
+      resetFunc();
     }
 }
 }
