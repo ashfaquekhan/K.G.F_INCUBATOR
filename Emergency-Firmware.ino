@@ -1,12 +1,12 @@
 #define CLK 2
 #define DT 3
 #define DHT11_PIN 7
-
+//emergency firmware
 #define TEMP_RELAY  10 //IN 1
 #define FAN_RELAY  9 // IN 2
 #define EXHAUST  6 // IN 3
 #define RELAYE  5 //IN 4
-
+#define RESET 12 // reset pin
 #include <EEPROM.h>
 #include <Wire.h>
 #include <LiquidCrystal_PCF8574.h>
@@ -27,6 +27,10 @@ void setup() {
   pinMode(FAN_RELAY, OUTPUT);
   pinMode(EXHAUST, OUTPUT);
   pinMode(RELAYE, OUTPUT);
+  digitalWrite(RESET,1);
+  delay(200);
+  pinMode(RESET,OUTPUT);
+  
   lcd.begin(16, 2);
   lcd.setBacklight(255);
   lcd.home();
@@ -79,7 +83,14 @@ void disp(){
     }
     if(temp<0)
     {
-      resetFunc();
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("CHECK THE SENSOR");
+      lcd.setCursor(0,1);
+      lcd.print("RESTARTING IN 5 SECONDS");
+      delay(5000);
+      digitalWrite(RESET,0);
+      delay(200);
     }
 }
 }
