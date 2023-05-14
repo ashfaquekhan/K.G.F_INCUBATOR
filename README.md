@@ -2,6 +2,5 @@
 An opensource poultry incubator with temperature and humidity controll.
 [![YouTube Video](https://img.youtube.com/vi/T_GT0cZH6tw/0.jpg)](https://www.youtube.com/watch?v=T_GT0cZH6tw)
 
-
-![Test 1 Results](https://github.com/ashfaquekhan/K.G.F_INCUBATOR/assets/42895491/529afc96-3099-4689-8c61-67f937367c12)
-![Test 2 Results](https://github.com/ashfaquekhan/K.G.F_INCUBATOR/assets/42895491/ed79673c-a41f-465d-aa17-7192ebf71a53)
+![Screenshot_20211025-142026_Sheets](https://github.com/ashfaquekhan/K.G.F_INCUBATOR/assets/42895491/ae95c9b5-cbf8-400c-9346-e24893e88e5e)
+![Screenshot_20211025-141751_Sheets](https://github.com/ashfaquekhan/K.G.F_INCUBATOR/assets/42895491/fa7f6729-6208-4421-aa31-b975e7979ddb)
